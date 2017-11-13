@@ -32,10 +32,6 @@ module GPIO
       (GPIOFilesystem / 'unexport').write(@number.to_s)
     end
 
-    def io_mode=(mode)
-      @io_mode = mode
-    end
-
     def set_edge_mode
       @edge_path.write(@edge_mode)
     end
