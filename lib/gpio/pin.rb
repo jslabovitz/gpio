@@ -3,47 +3,86 @@ module GPIO
   class Pin
 
     attr_accessor :number
-    attr_accessor :io_mode
+    attr_accessor :direction
     attr_accessor :edge_mode
+    attr_accessor :value_type
     attr_reader   :value_io
+    attr_accessor :handler
 
-    def initialize(number, io_mode: 'r', edge_mode: 'falling')
+    def initialize(number, direction: :in, edge_mode: :none, value_type: nil, handler: nil)
       @number = number
-      @io_mode = io_mode
-      @edge_mode = edge_mode    # "none", "rising", "falling", or "both"
+      @direction = direction
+      @edge_mode = edge_mode
+      @value_type = value_type
+      @handler = handler
+      setup
+    end
+
+    def setup
       export
+      set_direction
       set_edge_mode
-      open
+      open_value
     end
 
-    def export
-      export_path.write(@number.to_s)
-      3.times do
-        return if root_path.exist?
-        sleep 0.1
-      end
-      raise "No GPIO path appeared at #{root_path}"
-    end
-
-    def unexport
-      @value_io.close
-      unexport_path.write(@number.to_s)
-    end
-
-    def open
-      @value_io = value_path.open(@io_mode)
+    def shutdown
+      unexport
     end
 
     def read
-      value = @value_io.read
       @value_io.seek(0, IO::SEEK_SET)
-      value
+      value = @value_io.read.chomp
+      value = case @value_type
+      when :bool
+        (value == '0') ? false : true
+      when :int
+        value.to_i
+      else
+        value
+      end
+      @handler.call(self, value)
+    end
+
+    def input?
+      @direction == :in
+    end
+
+    def output?
+      @direction == :out
     end
 
     private
 
+    def export
+      unless root_path.exist?
+        export_path.open('wb') { |io| io.write(@number.to_s) }
+        3.times do
+          return if root_path.exist?
+          sleep 0.1
+        end
+        raise "Couldn't export pin #{@number}: no GPIO path appeared at #{root_path}"
+      end
+    end
+
+    def unexport
+      if root_path.exist?
+        @value_io.close if @value_io
+        unexport_path.open('wb') { |io| io.write(@number.to_s) }
+      end
+    end
+
+    def set_direction
+      direction_path.open('wb') { |io| io.write(@direction.to_s) }
+    end
+
     def set_edge_mode
-      edge_path.write(@edge_mode)
+      if @edge_mode
+        edge_path.open('wb') { |io| io.write(@edge_mode.to_s) }
+      end
+    end
+
+    def open_value
+      @value_io = value_path.open(output? ? 'wb' : 'rb')
     end
 
     def export_path
@@ -56,6 +95,10 @@ module GPIO
 
     def root_path
       GPIOFilesystem / "gpio#{number}"
+    end
+
+    def direction_path
+      root_path / 'direction'
     end
 
     def edge_path
