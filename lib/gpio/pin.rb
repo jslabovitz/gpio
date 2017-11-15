@@ -7,14 +7,12 @@ module GPIO
     attr_accessor :edge_mode
     attr_accessor :value_type
     attr_reader   :value_io
-    attr_accessor :handler
 
     def initialize(number, direction: :in, edge_mode: :none, value_type: nil, handler: nil)
       @number = number
       @direction = direction
       @edge_mode = edge_mode
       @value_type = value_type
-      @handler = handler
       setup
     end
 

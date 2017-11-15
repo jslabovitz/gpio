@@ -10,9 +10,18 @@ module GPIO
       GPIOFilesystem.exist?
     end
 
-    def on_pin(number, params={}, &block)
-      pin = Pin.new(number, params.merge(handler: block))
-      @pin_ios[pin.value_io] = pin
+    def setup_input_pin(params)
+      setup_pin(params.merge(direction: :in))
+    end
+
+    def setup_output_pin(params)
+      setup_pin(params.merge(direction: :out))
+    end
+
+    def setup_pin(params)
+      Pin.new(params).tap do |pin|
+        @pin_ios[pin.value_io] = pin
+      end
     end
 
     def shutdown
