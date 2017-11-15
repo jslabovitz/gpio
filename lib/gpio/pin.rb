@@ -78,7 +78,7 @@ module GPIO
     end
 
     def set_edge_mode
-      if @edge_mode
+      if input? && @edge_mode
         edge_path.open('wb') { |io| io.write(@edge_mode.to_s) }
       end
     end
