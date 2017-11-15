@@ -38,7 +38,11 @@ module GPIO
       else
         value
       end
-      @handler.call(self, value)
+    end
+
+    def write(value)
+      value = (value ? 1 : 0) if @value_type == :bool
+      @value_io.write(value.to_s)
     end
 
     def input?
