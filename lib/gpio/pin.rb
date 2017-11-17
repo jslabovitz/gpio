@@ -43,7 +43,6 @@ module GPIO
     def write(value)
       value = (value ? 1 : 0) if @value_type == :bool
       @value_io.puts(value.to_s)
-      @value_io.flush
     end
 
     def input?
