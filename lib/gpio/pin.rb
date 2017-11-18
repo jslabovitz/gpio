@@ -5,14 +5,12 @@ module GPIO
     attr_accessor :number
     attr_accessor :direction
     attr_accessor :edge_mode
-    attr_accessor :value_type
     attr_reader   :value_io
 
-    def initialize(number:, direction:, edge_mode: :none, value_type: nil)
+    def initialize(number:, direction:, edge_mode: :none)
       @number = number
       @direction = direction
       @edge_mode = edge_mode
-      @value_type = value_type
       setup
     end
 
@@ -29,20 +27,11 @@ module GPIO
 
     def read
       @value_io.seek(0, IO::SEEK_SET)
-      value = @value_io.read.chomp
-      value = case @value_type
-      when :bool
-        (value == '0') ? false : true
-      when :int
-        value.to_i
-      else
-        value
-      end
+      @value_io.gets.chomp.to_i != 0
     end
 
     def write(value)
-      value = (value ? 1 : 0) if @value_type == :bool
-      @value_io.puts(value.to_s)
+      @value_io.puts((value ? 1 : 0).to_s)
     end
 
     def input?
