@@ -57,7 +57,10 @@ module GPIO
 
     def unexport
       if root_path.exist?
-        @value_io.close if @value_io
+        if @value_io
+          @value_io.close
+          @value_io = nil
+        end
         unexport_path.open('wb') { |io| io.write(@number.to_s) }
       end
     end
