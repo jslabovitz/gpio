@@ -11,21 +11,19 @@ module GPIO
     end
 
     def setup_input_pin(params)
-      setup_pin(params.merge(direction: :in))
+      add_pin(Input.new(params))
     end
 
     def setup_output_pin(params)
-      setup_pin(params.merge(direction: :out))
+      add_pin(Output.new(params))
     end
 
-    def setup_pin(params)
-      Pin.new(params).tap do |pin|
-        @pin_ios[pin.value_io] = pin
-      end
+    def add_pin(pin)
+      @pin_ios[pin.value_io] = pin
     end
 
     def shutdown
-      pins.map(&:shutdown)
+      pins.map(&:unexport)
     end
 
     def pins

@@ -1,7 +1,8 @@
 require 'path'
 
 require 'gpio/manager'
-require 'gpio/pin'
+require 'gpio/input'
+require 'gpio/output'
 require 'gpio/version'
 
 module GPIO
