@@ -2,13 +2,17 @@ module GPIO
 
   class Input
 
+    DebounceDelta = 0.1
+
     attr_accessor :pin_number
     attr_accessor :edge_mode
+    attr_accessor :value
     attr_reader   :value_io
 
     def initialize(pin_number:, edge_mode: nil)
       @pin_number = pin_number
       @edge_mode = edge_mode
+      @last_value_timestamp = nil
       export
       set_direction
       set_edge_mode
@@ -19,9 +23,16 @@ module GPIO
       'in'
     end
 
-    def value
-      @value_io.seek(0, IO::SEEK_SET)
-      @value_io.gets.chomp.to_i != 0
+    def debounce_input
+      value = read_value
+      timestamp = Time.now.to_f
+      if @last_value_timestamp.nil? || (timestamp - @last_value_timestamp) > DebounceDelta
+        @last_value_timestamp = timestamp
+        @value = value
+        true
+      else
+        false
+      end
     end
 
     def export
@@ -59,6 +70,11 @@ module GPIO
 
     def open_value
       @value_io = value_path.open((direction == 'out') ? 'wb' : 'rb')
+    end
+
+    def read_value
+      @value_io.seek(0, IO::SEEK_SET)
+      @value_io.gets.chomp.to_i != 0
     end
 
     def export_path
