@@ -18,6 +18,10 @@ module GPIO
       add_pin(Output.new(params))
     end
 
+    def setup_led(params)
+      LED.new(params)
+    end
+
     def add_pin(pin)
       @pin_ios[pin.value_io] = pin
     end
