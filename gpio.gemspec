@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_path  = 'lib'
 
-  s.add_dependency 'path'
+  s.add_dependency 'path', '~> 0'
 
   s.add_development_dependency 'rake', '~> 12.3'
   s.add_development_dependency 'rubygems-tasks', '~> 0.2'
