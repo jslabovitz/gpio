@@ -1,29 +1,23 @@
+require_relative 'lib/gpio/version'
 
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "gpio/version"
+Gem::Specification.new do |s|
+  s.name          = 'gpio'
+  s.version       = GPIO::VERSION
+  s.author        = 'John Labovitz'
+  s.email         = 'johnl@johnlabovitz.com'
 
-Gem::Specification.new do |spec|
-  spec.name          = "gpio"
-  spec.version       = GPIO::VERSION
-  spec.authors       = ["John Labovitz"]
-  spec.email         = ["johnl@johnlabovitz.com"]
+  s.summary       = %q{GPIO does blah blah blah}
+  # s.description   = %q{TODO: Write a longer description or delete this line.}
+  s.homepage      = 'http://github.com/jslabovitz/gpio'
+  s.license       = 'MIT'
 
-  spec.summary       = %q{GPIO does blah blah blah}
-  # spec.description   = %q{TODO: Write a longer description or delete this line.}
-  # spec.homepage      = "TODO: Put your gem's website or public repo URL here."
-  spec.license       = "MIT"
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  s.require_path  = 'lib'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  s.add_dependency 'path'
 
-  spec.add_dependency "path"
-
-  spec.add_development_dependency "bundler", "~> 1.16"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "minitest", "~> 5.0"
+  s.add_development_dependency 'rake', '~> 12.3'
+  s.add_development_dependency 'rubygems-tasks', '~> 0.2'
 end
