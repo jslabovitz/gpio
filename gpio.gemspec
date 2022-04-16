@@ -1,8 +1,6 @@
-require_relative 'lib/gpio/version'
-
 Gem::Specification.new do |s|
   s.name          = 'gpio'
-  s.version       = GPIO::VERSION
+  s.version       = '0.2'
   s.author        = 'John Labovitz'
   s.email         = 'johnl@johnlabovitz.com'
 
@@ -16,8 +14,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_path  = 'lib'
 
-  s.add_dependency 'path', '~> 0'
+  s.add_dependency 'path', '~> 2.0'
 
-  s.add_development_dependency 'rake', '~> 12.3'
-  s.add_development_dependency 'rubygems-tasks', '~> 0.2'
+  s.add_development_dependency 'rake', '~> 13.0'
 end

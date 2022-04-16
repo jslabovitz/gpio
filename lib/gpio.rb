@@ -4,7 +4,6 @@ require 'gpio/manager'
 require 'gpio/input'
 require 'gpio/output'
 require 'gpio/led'
-require 'gpio/version'
 
 module GPIO
 
