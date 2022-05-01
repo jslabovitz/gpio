@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'gpio'
+
+include GPIO
+
+pin = Output.new(pin_number: 17)
+pin.low!
+
+3.times do
+  pin.toggle!
+  sleep 1
+end
+
+;;pin.dump
